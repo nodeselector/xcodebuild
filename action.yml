@@ -37,7 +37,7 @@ inputs:
     default: ''
   allow-provisioning-updates:
     description: 'Allow provisioning updates'
-    default: ''
+    default: 'false'
   allow-device-registration:
     description: |
       Allow device registration. This can register the virtual machine hosting the
@@ -47,7 +47,7 @@ inputs:
 
       The machine uuid is setable on Intel virtual machines, but unfortunately, not
       on Apple Silicon virtual machines.
-    default: ''
+    default: 'false'
 
 runs:
   using: node20
