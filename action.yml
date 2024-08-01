@@ -26,6 +26,9 @@ inputs:
   export-method:
     description: 'The export method'
     default: 'development'
+  export-path:
+    description: 'The path to export to'
+    default: ''
   app-store-connect-api-key-key-path:
     description: 'The App Store Connect API key'
     default: ''

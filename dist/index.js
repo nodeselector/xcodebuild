@@ -36015,6 +36015,11 @@ async function argumentsBuilder(options) {
 async function exportArchive(options) {
     const exportPlistPath = node_path_1.default.join(node_os_1.default.tmpdir(), 'exportOptions.plist');
     options.ExportOptionsPlist = exportPlistPath;
+    // if options.ExportPath is not set, use a default
+    if (!options.ExportPath) {
+        options.ExportPath = node_path_1.default.join(node_os_1.default.tmpdir(), 'export');
+        node_fs_1.default.mkdirSync(options.ExportPath, { recursive: true });
+    }
     node_fs_1.default.mkdirSync(node_path_1.default.dirname(exportPlistPath), { recursive: true });
     node_fs_1.default.writeFileSync(exportPlistPath, generateExportPlist(options.ExportMethod));
     const args = await argumentsBuilder(options);

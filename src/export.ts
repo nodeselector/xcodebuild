@@ -57,6 +57,11 @@ async function argumentsBuilder(options: ExportOptions): Promise<string[]> {
 export async function exportArchive(options: ExportOptions): Promise<SpawnResult> {
   const exportPlistPath = path.join(os.tmpdir(), 'exportOptions.plist')
   options.ExportOptionsPlist = exportPlistPath
+  // if options.ExportPath is not set, use a default
+  if (!options.ExportPath) {
+    options.ExportPath = path.join(os.tmpdir(), 'export')
+    fs.mkdirSync(options.ExportPath, { recursive: true })
+  }
   fs.mkdirSync(path.dirname(exportPlistPath), { recursive: true })
   fs.writeFileSync(exportPlistPath, generateExportPlist(options.ExportMethod))
   const args = await argumentsBuilder(options)
