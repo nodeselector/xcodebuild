@@ -19,7 +19,7 @@ type ExportOptions = {
 async function argumentsBuilder(options: ExportOptions): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const args = [
-      'exportArchive',
+      '-exportArchive',
       '-archivePath', options.ArchivePath,
       '-exportPath', options.ExportPath,
       '-exportOptionsPlist', options.ExportOptionsPlist
@@ -56,6 +56,7 @@ async function argumentsBuilder(options: ExportOptions): Promise<string[]> {
  */
 export async function exportArchive(options: ExportOptions): Promise<SpawnResult> {
   const exportPlistPath = path.join(os.tmpdir(), 'exportOptions.plist')
+  options.ExportOptionsPlist = exportPlistPath
   fs.mkdirSync(path.dirname(exportPlistPath), { recursive: true })
   fs.writeFileSync(exportPlistPath, generateExportPlist(options.ExportMethod))
   const args = await argumentsBuilder(options)

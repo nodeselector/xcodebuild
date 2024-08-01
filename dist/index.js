@@ -35984,7 +35984,7 @@ const node_path_1 = __importDefault(__nccwpck_require__(9411));
 async function argumentsBuilder(options) {
     return new Promise((resolve, reject) => {
         const args = [
-            'exportArchive',
+            '-exportArchive',
             '-archivePath', options.ArchivePath,
             '-exportPath', options.ExportPath,
             '-exportOptionsPlist', options.ExportOptionsPlist
@@ -36014,6 +36014,7 @@ async function argumentsBuilder(options) {
  */
 async function exportArchive(options) {
     const exportPlistPath = node_path_1.default.join(node_os_1.default.tmpdir(), 'exportOptions.plist');
+    options.ExportOptionsPlist = exportPlistPath;
     node_fs_1.default.mkdirSync(node_path_1.default.dirname(exportPlistPath), { recursive: true });
     node_fs_1.default.writeFileSync(exportPlistPath, generateExportPlist(options.ExportMethod));
     const args = await argumentsBuilder(options);
