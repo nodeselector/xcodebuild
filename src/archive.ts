@@ -48,15 +48,15 @@ async function argumentsBuilder(options: ArchiveOptions): Promise<string[]> {
     }
 
     if (options.AppStoreConnectAPIKey) {
-      args.push('-appStoreConnectAPIKey', options.AppStoreConnectAPIKey)
+      args.push('-authenticationKeyPath', options.AppStoreConnectAPIKey)
     }
 
     if (options.AppStoreConnectAPIIssuer) {
-      args.push('-appStoreConnectAPIIssuer', options.AppStoreConnectAPIIssuer)
+      args.push('-authenticationIssuerID', options.AppStoreConnectAPIIssuer)
     }
 
     if (options.AppStoreConnectAPIKeyID) {
-      args.push('-appStoreConnectAPIKeyID', options.AppStoreConnectAPIKeyID)
+      args.push('-authenticationKeyID', options.AppStoreConnectAPIKeyID)
     }
 
     resolve(args)
