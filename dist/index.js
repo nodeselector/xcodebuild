@@ -24934,21 +24934,21 @@ async function argumentsBuilder(options) {
     return new Promise((resolve, reject) => {
         resolve([
             'archive',
-            '--scheme',
+            '-scheme',
             options.Scheme,
-            '--project',
+            '-project',
             options.Project,
-            '--archive-path',
+            '-archive-path',
             options.ArchivePath,
-            '--allow-provisioning-updates',
+            '-allow-provisioning-updates',
             options.AllowProvisioningUpdates.toString(),
-            '--allow-provisioning-device-registration',
+            '-allow-provisioning-device-registration',
             options.AllowProvisioningDeviceRegistration.toString(),
-            '--app-store-connect-api-key',
+            '-app-store-connect-api-key',
             options.AppStoreConnectAPIKey,
-            '--app-store-connect-api-issuer',
+            '-app-store-connect-api-issuer',
             options.AppStoreConnectAPIIssuer,
-            '--app-store-connect-api-key-id',
+            '-app-store-connect-api-key-id',
             options.AppStoreConnectAPIKeyID
         ]);
     });
