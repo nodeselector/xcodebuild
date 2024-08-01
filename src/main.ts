@@ -72,7 +72,8 @@ export async function run(): Promise<void> {
       case 'upload': {
         const options = {
           Type: core.getInput('type'),
-          File: core.getInput('file'),
+          ExportPath: core.getInput('export-path'),
+          ProductName: core.getInput('product-name'),
           AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id'),
           AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id')
         }

@@ -1,20 +1,23 @@
 import { spawn, SpawnResult } from './spawn'
+import path from 'node:path'
 
 type UploadOptions = {
   Type: string
-  File: string
+  ExportPath: string
+  ProductName: string
   AppStoreConnectAPIKeyID: string
   AppStoreConnectAPIIssuer: string
 }
 
 async function argumentsBuilder(options: UploadOptions): Promise<string[]> {
   return new Promise((resolve, reject) => {
+    const file = path.join(options.ExportPath, `${options.ProductName}.ipa`) // TODO ipa extension is hardcoded
     const args = [
       'xcrun',
       'altool',
       '--upload-app',
       '--type', options.Type,
-      '--file', options.File,
+      '--file', file,
       '--apiKey', options.AppStoreConnectAPIKeyID,
       '--issuer', options.AppStoreConnectAPIIssuer
     ]

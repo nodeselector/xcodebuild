@@ -36127,7 +36127,8 @@ async function run() {
             case 'upload': {
                 const options = {
                     Type: core.getInput('type'),
-                    File: core.getInput('file'),
+                    ExportPath: core.getInput('export-path'),
+                    ProductName: core.getInput('product-name'),
                     AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id'),
                     AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id')
                 };
@@ -36201,21 +36202,26 @@ async function spawn(command, args) {
 /***/ }),
 
 /***/ 6969:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uploadApp = uploadApp;
 const spawn_1 = __nccwpck_require__(509);
+const node_path_1 = __importDefault(__nccwpck_require__(9411));
 async function argumentsBuilder(options) {
     return new Promise((resolve, reject) => {
+        const file = node_path_1.default.join(options.ExportPath, `${options.ProductName}.ipa`); // TODO ipa extension is hardcoded
         const args = [
             'xcrun',
             'altool',
             '--upload-app',
             '--type', options.Type,
-            '--file', options.File,
+            '--file', file,
             '--apiKey', options.AppStoreConnectAPIKeyID,
             '--issuer', options.AppStoreConnectAPIIssuer
         ];

@@ -8,6 +8,9 @@ inputs:
   scheme:
     description: 'The scheme to build'
     default: ''
+  product-name:
+    description: 'The product name to build'
+    default: ''
   configuration:
     description: 'The configuration to build'
     default: ''
