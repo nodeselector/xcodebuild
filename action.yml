@@ -23,13 +23,13 @@ inputs:
   archive-path:
     description: 'The path to the archive'
     default: ''
-  app-store-connect-api-key:
+  app-store-connect-api-key-key-path:
     description: 'The App Store Connect API key'
     default: ''
-  app-store-connect-api-issuer-id:
+  app-store-connect-api-key-issuer-id:
     description: 'The App Store Connect API issuer ID'
     default: ''
-  app-store-connect-api-key-id:
+  app-store-connect-api-key-key-id:
     description: 'The App Store Connect API key ID'
     default: ''
   allow-provisioning-updates:

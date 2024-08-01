@@ -19,11 +19,11 @@ export async function run(): Promise<void> {
           AllowProvisioningDeviceRegistration: core.getBooleanInput(
             'allow-device-registration'
           ),
-          AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key'),
+          AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key-key-path'),
           AppStoreConnectAPIIssuer: core.getInput(
-            'app-store-connect-api-issuer'
+            'app-store-connect-api-key-issuer-id'
           ),
-          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-id')
+          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id')
         }
 
         console.log('options', options)
