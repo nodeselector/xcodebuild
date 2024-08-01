@@ -36096,14 +36096,31 @@ const archive_1 = __nccwpck_require__(2933);
 const export_1 = __nccwpck_require__(2697);
 const uploadApp_1 = __nccwpck_require__(6969);
 /**
+ * Logs the result of a command and groups the output.
+ * @param {string} groupName - The name of the group.
+ * @param {any} result - The result object containing command details.
+ */
+function logResult(groupName, result) {
+    core.startGroup(groupName);
+    core.info(`Command: ${result.Command}`);
+    core.info(`Arguments: ${result.Args.join(' ')}`);
+    core.info(`Code: ${result.Code}`);
+    core.info(`Stdout: ${result.Stdout}`);
+    core.info(`Stderr: ${result.Stderr}`);
+    core.endGroup();
+}
+/**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 async function run() {
     try {
-        switch (core.getInput('action')) {
-            case 'archive': {
-                const options = {
+        const action = core.getInput('action');
+        let options;
+        let result;
+        switch (action) {
+            case 'archive':
+                options = {
                     Scheme: core.getInput('scheme'),
                     Workspace: core.getInput('workspace'),
                     Destination: core.getInput('destination'),
@@ -36116,18 +36133,13 @@ async function run() {
                     AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id')
                 };
                 console.log('options', options);
-                const result = await (0, archive_1.archive)(options);
-                core.startGroup('xcodebuild');
-                core.info(`Command: ${result.Command}`);
-                core.info(`Arguments: ${result.Args.join(' ')}`);
-                core.info(`Code: ${result.Code}`);
-                core.info(`Stdout: ${result.Stdout}`);
-                core.info(`Stderr: ${result.Stderr}`);
-                core.endGroup();
+                result = await (0, archive_1.archive)(options);
+                if (result.Code !== 0)
+                    throw new Error(`Archive failed with code ${result.Code}`);
+                logResult('xcodebuild', result);
                 break;
-            }
-            case 'export': {
-                const options = {
+            case 'export':
+                options = {
                     ArchivePath: core.getInput('archive-path'),
                     ExportPath: core.getInput('export-path'),
                     ExportOptionsPlist: core.getInput('export-options-plist'),
@@ -36139,18 +36151,13 @@ async function run() {
                     AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id')
                 };
                 console.log('options', options);
-                const result = await (0, export_1.exportArchive)(options);
-                core.startGroup('xcodebuild');
-                core.info(`Command: ${result.Command}`);
-                core.info(`Arguments: ${result.Args.join(' ')}`);
-                core.info(`Code: ${result.Code}`);
-                core.info(`Stdout: ${result.Stdout}`);
-                core.info(`Stderr: ${result.Stderr}`);
-                core.endGroup();
+                result = await (0, export_1.exportArchive)(options);
+                if (result.Code !== 0)
+                    throw new Error(`Export failed with code ${result.Code}`);
+                logResult('xcodebuild', result);
                 break;
-            }
-            case 'upload': {
-                const options = {
+            case 'upload':
+                options = {
                     Type: core.getInput('upload-type'),
                     ExportPath: core.getInput('export-path'),
                     ProductName: core.getInput('product-name'),
@@ -36158,19 +36165,13 @@ async function run() {
                     AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id')
                 };
                 console.log('options', options);
-                const result = await (0, uploadApp_1.uploadApp)(options);
-                core.startGroup('xcrun altool');
-                core.info(`Command: ${result.Command}`);
-                core.info(`Arguments: ${result.Args.join(' ')}`);
-                core.info(`Code: ${result.Code}`);
-                core.info(`Stdout: ${result.Stdout}`);
-                core.info(`Stderr: ${result.Stderr}`);
-                core.endGroup();
+                result = await (0, uploadApp_1.uploadApp)(options);
+                if (result.Code !== 0)
+                    throw new Error(`Upload failed with code ${result.Code}`);
+                logResult('xcrun altool', result);
                 break;
-            }
-            default: {
-                throw new Error(`Unknown action: ${core.getInput('action')}`);
-            }
+            default:
+                throw new Error(`Unknown action: ${action}`);
         }
     }
     catch (error) {
