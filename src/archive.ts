@@ -29,7 +29,7 @@ async function argumentsBuilder(options: ArchiveOptions): Promise<string[]> {
       options.AllowProvisioningDeviceRegistration.toString(),
       '-authenticationKeyPath',
       options.AppStoreConnectAPIKey,
-      '-authenticationIssuerID',
+      '-authenticationKeyIssuerID',
       options.AppStoreConnectAPIIssuer,
       '-authenticationKeyID',
       options.AppStoreConnectAPIKeyID

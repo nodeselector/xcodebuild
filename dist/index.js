@@ -24946,7 +24946,7 @@ async function argumentsBuilder(options) {
             options.AllowProvisioningDeviceRegistration.toString(),
             '-authenticationKeyPath',
             options.AppStoreConnectAPIKey,
-            '-authenticationIssuerID',
+            '-authenticationKeyIssuerID',
             options.AppStoreConnectAPIIssuer,
             '-authenticationKeyID',
             options.AppStoreConnectAPIKeyID
