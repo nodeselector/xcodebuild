@@ -24929,30 +24929,41 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.archive = archive;
 const spawn_1 = __nccwpck_require__(509);
 async function argumentsBuilder(options) {
-    // TODO if an option is not provided we should figure out defaults based
-    // on what we can infer from the project.
     return new Promise((resolve, reject) => {
-        resolve([
+        const args = [
             'archive',
-            '-destination',
-            'generic/platform=iOS',
-            '-scheme',
-            options.Scheme,
-            '-project',
-            options.Project,
-            '-archivePath',
-            options.ArchivePath,
-            '-allowProvisioningUpdates',
-            // options.AllowProvisioningUpdates.toString(),
-            // '-allowProvisioningDeviceRegistration',
-            // options.AllowProvisioningDeviceRegistration.toString(), TODO
-            '-authenticationKeyPath',
-            options.AppStoreConnectAPIKey,
-            '-authenticationKeyIssuerID',
-            options.AppStoreConnectAPIIssuer,
-            '-authenticationKeyID',
-            options.AppStoreConnectAPIKeyID
-        ]);
+        ];
+        if (options.Scheme) {
+            args.push('-scheme', options.Scheme);
+        }
+        if (options.Project) {
+            args.push('-project', options.Project);
+        }
+        if (options.ArchivePath) {
+            args.push('-archivePath', options.ArchivePath);
+        }
+        if (options.Workspace) {
+            args.push('-workspace', options.Workspace);
+        }
+        if (options.Destination) {
+            args.push('-destination', options.Destination);
+        }
+        if (options.AllowProvisioningUpdates) {
+            args.push('-allowProvisioningUpdates');
+        }
+        if (options.AllowProvisioningDeviceRegistration) {
+            args.push('-allowProvisioningDeviceRegistration');
+        }
+        if (options.AppStoreConnectAPIKey) {
+            args.push('-appStoreConnectAPIKey', options.AppStoreConnectAPIKey);
+        }
+        if (options.AppStoreConnectAPIIssuer) {
+            args.push('-appStoreConnectAPIIssuer', options.AppStoreConnectAPIIssuer);
+        }
+        if (options.AppStoreConnectAPIKeyID) {
+            args.push('-appStoreConnectAPIKeyID', options.AppStoreConnectAPIKeyID);
+        }
+        resolve(args);
     });
 }
 async function archive(options) {
@@ -25004,6 +25015,8 @@ async function run() {
             case 'archive': {
                 const options = {
                     Scheme: core.getInput('scheme'),
+                    Workspace: core.getInput('workspace'),
+                    Destination: core.getInput('destination'),
                     Project: core.getInput('project'),
                     ArchivePath: core.getInput('archive-path'),
                     AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
