@@ -1,23 +1,43 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
-
-# Add your action's branding here. This will appear on the GitHub Marketplace.
-branding:
-  icon: 'heart'
-  color: 'red'
-
-# Define your inputs here.
+name: nodeselector/xcodebuild
+description: wrapper for xcodebuild
+author: "@nodeselector"
 inputs:
-  milliseconds:
-    description: 'Your input description here'
-    required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+  action: 
+    description: 'The action to perform'
+    default: 'build'
+  scheme:
+    description: 'The scheme to build'
+    default: ''
+  configuration:
+    description: 'The configuration to build'
+    default: ''
+  destination:
+    description: 'The destination to build for'
+    default: ''
+  workspace:
+    description: 'The workspace to build'
+    default: ''
+  project:
+    description: 'The project to build'
+    default: ''
+  archive-path:
+    description: 'The path to the archive'
+    default: ''
+  app-store-connect-api-key:
+    description: 'The App Store Connect API key'
+    default: ''
+  app-store-connect-api-issuer-id:
+    description: 'The App Store Connect API issuer ID'
+    default: ''
+  app-store-connect-api-key-id:
+    description: 'The App Store Connect API key ID'
+    default: ''
+  allow-provisioning-updates:
+    description: 'Allow provisioning updates'
+    default: 'false'
+  allow-device-registration:
+    description: 'Allow device registration'
+    default: 'false'
 
 runs:
   using: node20

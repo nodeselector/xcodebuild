@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import { archive } from './archive'
 
 /**
  * The main function for the action.
@@ -7,18 +7,28 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
-
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    switch (core.getInput('action')) {
+      case 'archive': {
+        const options = {
+          Scheme: core.getInput('scheme'),
+          Project: core.getInput('project'),
+          ArchivePath: core.getInput('archive-path'),
+          AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
+          AllowProvisioningDeviceRegistration: core.getBooleanInput('allow-provisioning-device-registration'),
+          AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key'),
+          AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-issuer'),
+          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-id'),
+        }
+        const result = await archive(options)
+        core.setOutput('code', result.Code)
+        core.setOutput('stdout', result.Stdout)
+        core.setOutput('stderr', result.Stderr)
+        break
+      }
+      default: {
+        throw new Error(`Unknown action: ${core.getInput('action')}`)
+      }
+    }
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
