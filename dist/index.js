@@ -36134,9 +36134,9 @@ async function run() {
                 };
                 console.log('options', options);
                 result = await (0, archive_1.archive)(options);
+                logResult('xcodebuild', result);
                 if (result.Code !== 0)
                     throw new Error(`Archive failed with code ${result.Code}`);
-                logResult('xcodebuild', result);
                 break;
             case 'export':
                 options = {
@@ -36152,9 +36152,9 @@ async function run() {
                 };
                 console.log('options', options);
                 result = await (0, export_1.exportArchive)(options);
+                logResult('xcodebuild', result);
                 if (result.Code !== 0)
                     throw new Error(`Export failed with code ${result.Code}`);
-                logResult('xcodebuild', result);
                 break;
             case 'upload':
                 options = {
@@ -36166,9 +36166,9 @@ async function run() {
                 };
                 console.log('options', options);
                 result = await (0, uploadApp_1.uploadApp)(options);
+                logResult('xcrun altool', result);
                 if (result.Code !== 0)
                     throw new Error(`Upload failed with code ${result.Code}`);
-                logResult('xcrun altool', result);
                 break;
             default:
                 throw new Error(`Unknown action: ${action}`);
