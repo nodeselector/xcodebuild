@@ -4,6 +4,8 @@ type ArchiveOptions = {
   Scheme: string
   Project: string
   ArchivePath: string
+  Workspace: string
+  Destination: string
   AllowProvisioningUpdates: boolean
   AllowProvisioningDeviceRegistration: boolean
   AppStoreConnectAPIKey: string
@@ -12,30 +14,52 @@ type ArchiveOptions = {
 }
 
 async function argumentsBuilder(options: ArchiveOptions): Promise<string[]> {
-  // TODO if an option is not provided we should figure out defaults based
-  // on what we can infer from the project.
   return new Promise((resolve, reject) => {
-    resolve([
+    const args = [
       'archive',
-      '-destination',
-      'generic/platform=iOS',
-      '-scheme',
-      options.Scheme,
-      '-project',
-      options.Project,
-      '-archivePath',
-      options.ArchivePath,
-      '-allowProvisioningUpdates',
-      // options.AllowProvisioningUpdates.toString(),
-      // '-allowProvisioningDeviceRegistration',
-      // options.AllowProvisioningDeviceRegistration.toString(), TODO
-      '-authenticationKeyPath',
-      options.AppStoreConnectAPIKey,
-      '-authenticationKeyIssuerID',
-      options.AppStoreConnectAPIIssuer,
-      '-authenticationKeyID',
-      options.AppStoreConnectAPIKeyID
-    ])
+    ]
+
+    if (options.Scheme) {
+      args.push('-scheme', options.Scheme)
+    }
+
+    if (options.Project) {
+      args.push('-project', options.Project)
+    }
+
+    if (options.ArchivePath) {
+      args.push('-archivePath', options.ArchivePath)
+    }
+
+    if (options.Workspace) {
+      args.push('-workspace', options.Workspace)
+    }
+
+    if (options.Destination) {
+      args.push('-destination', options.Destination)
+    }
+
+    if (options.AllowProvisioningUpdates) {
+      args.push('-allowProvisioningUpdates')
+    }
+
+    if (options.AllowProvisioningDeviceRegistration) {
+      args.push('-allowProvisioningDeviceRegistration')
+    }
+
+    if (options.AppStoreConnectAPIKey) {
+      args.push('-appStoreConnectAPIKey', options.AppStoreConnectAPIKey)
+    }
+
+    if (options.AppStoreConnectAPIIssuer) {
+      args.push('-appStoreConnectAPIIssuer', options.AppStoreConnectAPIIssuer)
+    }
+
+    if (options.AppStoreConnectAPIKeyID) {
+      args.push('-appStoreConnectAPIKeyID', options.AppStoreConnectAPIKeyID)
+    }
+
+    resolve(args)
   })
 }
 

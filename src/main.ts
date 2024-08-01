@@ -11,6 +11,8 @@ export async function run(): Promise<void> {
       case 'archive': {
         const options = {
           Scheme: core.getInput('scheme'),
+          Workspace: core.getInput('workspace'),
+          Destination: core.getInput('destination'),
           Project: core.getInput('project'),
           ArchivePath: core.getInput('archive-path'),
           AllowProvisioningUpdates: core.getBooleanInput(
