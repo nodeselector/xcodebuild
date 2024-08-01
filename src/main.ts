@@ -44,8 +44,8 @@ export async function run(): Promise<void> {
         }
         console.log('options', options)
         result = await archive(options)
-        if (result.Code !== 0) throw new Error(`Archive failed with code ${result.Code}`)
         logResult('xcodebuild', result)
+        if (result.Code !== 0) throw new Error(`Archive failed with code ${result.Code}`)
         break
 
       case 'export':
@@ -62,8 +62,8 @@ export async function run(): Promise<void> {
         }
         console.log('options', options)
         result = await exportArchive(options)
-        if (result.Code !== 0) throw new Error(`Export failed with code ${result.Code}`)
         logResult('xcodebuild', result)
+        if (result.Code !== 0) throw new Error(`Export failed with code ${result.Code}`)
         break
 
       case 'upload':
@@ -76,8 +76,8 @@ export async function run(): Promise<void> {
         }
         console.log('options', options)
         result = await uploadApp(options)
-        if (result.Code !== 0) throw new Error(`Upload failed with code ${result.Code}`)
         logResult('xcrun altool', result)
+        if (result.Code !== 0) throw new Error(`Upload failed with code ${result.Code}`)
         break
 
       default:
