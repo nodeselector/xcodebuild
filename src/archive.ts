@@ -21,17 +21,17 @@ async function argumentsBuilder(options: ArchiveOptions): Promise<string[]> {
       options.Scheme,
       '-project',
       options.Project,
-      '-archive-path',
+      '-archivePath',
       options.ArchivePath,
-      '-allow-provisioning-updates',
+      '-allowProvisioningUpdates',
       options.AllowProvisioningUpdates.toString(),
-      '-allow-provisioning-device-registration',
+      '-allowProvisioningDeviceRegistration',
       options.AllowProvisioningDeviceRegistration.toString(),
-      '-app-store-connect-api-key',
+      '-authenticationKeyPath',
       options.AppStoreConnectAPIKey,
-      '-app-store-connect-api-issuer',
+      '-authenticationIssuerID',
       options.AppStoreConnectAPIIssuer,
-      '-app-store-connect-api-key-id',
+      '-authenticationKeyID',
       options.AppStoreConnectAPIKeyID
     ])
   })
