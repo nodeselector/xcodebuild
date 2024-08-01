@@ -25,6 +25,8 @@ export async function run(): Promise<void> {
           ),
           AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-id')
         }
+
+        console.log('options', options)
         const result = await archive(options)
         core.startGroup('xcodebuild')
         core.info(`Command: ${result.Command}`)

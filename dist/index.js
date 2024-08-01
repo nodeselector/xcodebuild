@@ -25010,10 +25010,15 @@ async function run() {
                     AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-issuer'),
                     AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-id')
                 };
+                console.log('options', options);
                 const result = await (0, archive_1.archive)(options);
-                core.setOutput('code', result.Code);
-                core.setOutput('stdout', result.Stdout);
-                core.setOutput('stderr', result.Stderr);
+                core.startGroup('xcodebuild');
+                core.info(`Command: ${result.Command}`);
+                core.info(`Arguments: ${result.Args.join(' ')}`);
+                core.info(`Code: ${result.Code}`);
+                core.info(`Stdout: ${result.Stdout}`);
+                core.info(`Stderr: ${result.Stderr}`);
+                core.endGroup();
                 break;
             }
             default: {
