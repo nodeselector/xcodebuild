@@ -5,6 +5,9 @@ inputs:
   action:
     description: 'The action to perform'
     default: 'build'
+  upload-type:
+    description: 'ios | macos | tvos'
+    default: 'ios'
   scheme:
     description: 'The scheme to build'
     default: ''
@@ -54,6 +57,9 @@ inputs:
       The machine uuid is setable on Intel virtual machines, but unfortunately, not
       on Apple Silicon virtual machines.
     default: 'false'
+outputs:
+  export-path:
+    description: 'The path to the exported file'
 
 runs:
   using: node20

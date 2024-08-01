@@ -1,4 +1,5 @@
 import { SpawnResult, spawn } from './spawn'
+import * as core from '@actions/core'
 import plist from 'plist'
 import fs from 'node:fs'
 import os from 'node:os'
@@ -62,6 +63,8 @@ export async function exportArchive(options: ExportOptions): Promise<SpawnResult
     options.ExportPath = path.join(os.tmpdir(), 'export')
     fs.mkdirSync(options.ExportPath, { recursive: true })
   }
+  core.setOutput('export-path', options.ExportPath)
+
   fs.mkdirSync(path.dirname(exportPlistPath), { recursive: true })
   fs.writeFileSync(exportPlistPath, generateExportPlist(options.ExportMethod))
   const args = await argumentsBuilder(options)
