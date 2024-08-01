@@ -24958,7 +24958,7 @@ async function argumentsBuilder(options) {
             args.push('-authenticationKeyPath', options.AppStoreConnectAPIKey);
         }
         if (options.AppStoreConnectAPIIssuer) {
-            args.push('-authenticationIssuerID', options.AppStoreConnectAPIIssuer);
+            args.push('-authenticationKeyIssuerID', options.AppStoreConnectAPIIssuer);
         }
         if (options.AppStoreConnectAPIKeyID) {
             args.push('-authenticationKeyID', options.AppStoreConnectAPIKeyID);

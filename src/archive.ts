@@ -52,7 +52,7 @@ async function argumentsBuilder(options: ArchiveOptions): Promise<string[]> {
     }
 
     if (options.AppStoreConnectAPIIssuer) {
-      args.push('-authenticationIssuerID', options.AppStoreConnectAPIIssuer)
+      args.push('-authenticationKeyIssuerID', options.AppStoreConnectAPIIssuer)
     }
 
     if (options.AppStoreConnectAPIKeyID) {
