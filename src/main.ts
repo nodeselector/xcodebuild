@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import { archive } from './archive'
+import { exportArchive } from './export'
 
 /**
  * The main function for the action.
@@ -30,6 +31,34 @@ export async function run(): Promise<void> {
 
         console.log('options', options)
         const result = await archive(options)
+        core.startGroup('xcodebuild')
+        core.info(`Command: ${result.Command}`)
+        core.info(`Arguments: ${result.Args.join(' ')}`)
+        core.info(`Code: ${result.Code}`)
+        core.info(`Stdout: ${result.Stdout}`)
+        core.info(`Stderr: ${result.Stderr}`)
+        core.endGroup()
+        break
+      }
+      case 'export': {
+        const options = {
+          ArchivePath: core.getInput('archive-path'),
+          ExportPath: core.getInput('export-path'),
+          ExportOptionsPlist: core.getInput('export-options-plist'),
+          ExportMethod: core.getInput('export-method'),
+          AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
+          AllowProvisioningDeviceRegistration: core.getBooleanInput(
+            'allow-device-registration'
+          ),
+          AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key-key-path'),
+          AppStoreConnectAPIIssuer: core.getInput(
+            'app-store-connect-api-key-issuer-id'
+          ),
+          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id')
+        }
+
+        console.log('options', options)
+        const result = await exportArchive(options)
         core.startGroup('xcodebuild')
         core.info(`Command: ${result.Command}`)
         core.info(`Arguments: ${result.Args.join(' ')}`)

@@ -23,6 +23,9 @@ inputs:
   archive-path:
     description: 'The path to the archive'
     default: ''
+  export-method:
+    description: 'The export method'
+    default: 'development'
   app-store-connect-api-key-key-path:
     description: 'The App Store Connect API key'
     default: ''
