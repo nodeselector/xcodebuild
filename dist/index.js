@@ -36242,9 +36242,8 @@ async function argumentsBuilder(options) {
     return new Promise((resolve, reject) => {
         const file = node_path_1.default.join(options.ExportPath, `${options.ProductName}.ipa`); // TODO ipa extension is hardcoded
         const args = [
-            'xcrun',
             'altool',
-            '--upload-app',
+            '--upload-app', // TODO start using --upload-package (--upload-app is deprecated)
             '--type', options.Type,
             '--file', file,
             '--apiKey', options.AppStoreConnectAPIKeyID,
