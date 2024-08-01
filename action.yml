@@ -1,8 +1,8 @@
 name: nodeselector/xcodebuild
 description: wrapper for xcodebuild
-author: "@nodeselector"
+author: '@nodeselector'
 inputs:
-  action: 
+  action:
     description: 'The action to perform'
     default: 'build'
   scheme:

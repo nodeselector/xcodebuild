@@ -13,11 +13,17 @@ export async function run(): Promise<void> {
           Scheme: core.getInput('scheme'),
           Project: core.getInput('project'),
           ArchivePath: core.getInput('archive-path'),
-          AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
-          AllowProvisioningDeviceRegistration: core.getBooleanInput('allow-provisioning-device-registration'),
+          AllowProvisioningUpdates: core.getBooleanInput(
+            'allow-provisioning-updates'
+          ),
+          AllowProvisioningDeviceRegistration: core.getBooleanInput(
+            'allow-provisioning-device-registration'
+          ),
           AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key'),
-          AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-issuer'),
-          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-id'),
+          AppStoreConnectAPIIssuer: core.getInput(
+            'app-store-connect-api-issuer'
+          ),
+          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-id')
         }
         const result = await archive(options)
         core.setOutput('code', result.Code)
