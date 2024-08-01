@@ -25005,7 +25005,7 @@ async function run() {
                     Project: core.getInput('project'),
                     ArchivePath: core.getInput('archive-path'),
                     AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
-                    AllowProvisioningDeviceRegistration: core.getBooleanInput('allow-provisioning-device-registration'),
+                    AllowProvisioningDeviceRegistration: core.getBooleanInput('allow-device-registration'),
                     AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key'),
                     AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-issuer'),
                     AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-id')

@@ -17,7 +17,7 @@ export async function run(): Promise<void> {
             'allow-provisioning-updates'
           ),
           AllowProvisioningDeviceRegistration: core.getBooleanInput(
-            'allow-provisioning-device-registration'
+            'allow-device-registration'
           ),
           AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key'),
           AppStoreConnectAPIIssuer: core.getInput(
