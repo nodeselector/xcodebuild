@@ -34,10 +34,17 @@ inputs:
     default: ''
   allow-provisioning-updates:
     description: 'Allow provisioning updates'
-    default: 'false'
+    default: ''
   allow-device-registration:
-    description: 'Allow device registration'
-    default: 'false'
+    description: |
+      Allow device registration. This can register the virtual machine hosting the
+      workflow with the Apple Developer Portal. This is probably not what you want
+      since it will consume a device slot and the virtual machine uuid will vary
+      over time.
+
+      The machine uuid is setable on Intel virtual machines, but unfortunately, not
+      on Apple Silicon virtual machines.
+    default: ''
 
 runs:
   using: node20
