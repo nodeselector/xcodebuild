@@ -24920,6 +24920,46 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ 2933:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.archive = archive;
+const spawn_1 = __nccwpck_require__(509);
+async function argumentsBuilder(options) {
+    // TODO if an option is not provided we should figure out defaults based
+    // on what we can infer from the project.
+    return new Promise((resolve, reject) => {
+        resolve([
+            'archive',
+            '--scheme',
+            options.Scheme,
+            '--project',
+            options.Project,
+            '--archive-path',
+            options.ArchivePath,
+            '--allow-provisioning-updates',
+            options.AllowProvisioningUpdates.toString(),
+            '--allow-provisioning-device-registration',
+            options.AllowProvisioningDeviceRegistration.toString(),
+            '--app-store-connect-api-key',
+            options.AppStoreConnectAPIKey,
+            '--app-store-connect-api-issuer',
+            options.AppStoreConnectAPIIssuer,
+            '--app-store-connect-api-key-id',
+            options.AppStoreConnectAPIKeyID
+        ]);
+    });
+}
+async function archive(options) {
+    return (0, spawn_1.spawn)('xcodebuild', await argumentsBuilder(options));
+}
+
+
+/***/ }),
+
 /***/ 399:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -24951,22 +24991,35 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
 const core = __importStar(__nccwpck_require__(2186));
-const wait_1 = __nccwpck_require__(5259);
+const archive_1 = __nccwpck_require__(2933);
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 async function run() {
     try {
-        const ms = core.getInput('milliseconds');
-        // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        core.debug(`Waiting ${ms} milliseconds ...`);
-        // Log the current timestamp, wait, then log the new timestamp
-        core.debug(new Date().toTimeString());
-        await (0, wait_1.wait)(parseInt(ms, 10));
-        core.debug(new Date().toTimeString());
-        // Set outputs for other workflow steps to use
-        core.setOutput('time', new Date().toTimeString());
+        switch (core.getInput('action')) {
+            case 'archive': {
+                const options = {
+                    Scheme: core.getInput('scheme'),
+                    Project: core.getInput('project'),
+                    ArchivePath: core.getInput('archive-path'),
+                    AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
+                    AllowProvisioningDeviceRegistration: core.getBooleanInput('allow-provisioning-device-registration'),
+                    AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key'),
+                    AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-issuer'),
+                    AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-id')
+                };
+                const result = await (0, archive_1.archive)(options);
+                core.setOutput('code', result.Code);
+                core.setOutput('stdout', result.Stdout);
+                core.setOutput('stderr', result.Stderr);
+                break;
+            }
+            default: {
+                throw new Error(`Unknown action: ${core.getInput('action')}`);
+            }
+        }
     }
     catch (error) {
         // Fail the workflow run if an error occurs
@@ -24978,24 +25031,43 @@ async function run() {
 
 /***/ }),
 
-/***/ 5259:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ 509:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wait = wait;
+exports.spawn = spawn;
+const child_process_1 = __nccwpck_require__(2081);
 /**
- * Wait for a number of milliseconds.
- * @param milliseconds The number of milliseconds to wait.
- * @returns {Promise<string>} Resolves with 'done!' after the wait is over.
+ * Run a command.
+ * @param command The command to run.
+ * @param args The arguments to pass to the command.
+ * @returns {Promise<SpawnResult>} The result of the command.
  */
-async function wait(milliseconds) {
-    return new Promise(resolve => {
-        if (isNaN(milliseconds)) {
-            throw new Error('milliseconds not a number');
-        }
-        setTimeout(() => resolve('done!'), milliseconds);
+async function spawn(command, args) {
+    return new Promise((resolve, reject) => {
+        const process = (0, child_process_1.spawn)(command, args);
+        let stdout = '';
+        let stderr = '';
+        process.stdout.on('data', data => {
+            stdout += data;
+        });
+        process.stderr.on('data', data => {
+            stderr += data;
+        });
+        process.on('close', code => {
+            resolve({
+                Code: code,
+                Stdout: stdout,
+                Stderr: stderr,
+                Command: command,
+                Args: args
+            });
+        });
+        process.on('error', error => {
+            reject(error);
+        });
     });
 }
 
@@ -25023,6 +25095,14 @@ module.exports = require("async_hooks");
 
 "use strict";
 module.exports = require("buffer");
+
+/***/ }),
+
+/***/ 2081:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("child_process");
 
 /***/ }),
 
