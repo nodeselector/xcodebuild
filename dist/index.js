@@ -24942,7 +24942,7 @@ async function argumentsBuilder(options) {
             options.ArchivePath,
             '-allowProvisioningUpdates',
             // options.AllowProvisioningUpdates.toString(),
-            '-allowProvisioningDeviceRegistration',
+            // '-allowProvisioningDeviceRegistration',
             // options.AllowProvisioningDeviceRegistration.toString(), TODO
             '-authenticationKeyPath',
             options.AppStoreConnectAPIKey,
