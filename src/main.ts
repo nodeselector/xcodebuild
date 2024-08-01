@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import { archive } from './archive'
 import { exportArchive } from './export'
+import { uploadApp } from './uploadApp'
 
 /**
  * The main function for the action.
@@ -60,6 +61,24 @@ export async function run(): Promise<void> {
         console.log('options', options)
         const result = await exportArchive(options)
         core.startGroup('xcodebuild')
+        core.info(`Command: ${result.Command}`)
+        core.info(`Arguments: ${result.Args.join(' ')}`)
+        core.info(`Code: ${result.Code}`)
+        core.info(`Stdout: ${result.Stdout}`)
+        core.info(`Stderr: ${result.Stderr}`)
+        core.endGroup()
+        break
+      }
+      case 'upload': {
+        const options = {
+          Type: core.getInput('type'),
+          File: core.getInput('file'),
+          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id'),
+          AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id')
+        }
+        console.log('options', options)
+        const result = await uploadApp(options)
+        core.startGroup('xcrun altool')
         core.info(`Command: ${result.Command}`)
         core.info(`Arguments: ${result.Args.join(' ')}`)
         core.info(`Code: ${result.Code}`)

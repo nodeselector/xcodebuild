@@ -36069,6 +36069,7 @@ exports.run = run;
 const core = __importStar(__nccwpck_require__(2186));
 const archive_1 = __nccwpck_require__(2933);
 const export_1 = __nccwpck_require__(2697);
+const uploadApp_1 = __nccwpck_require__(6969);
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -36115,6 +36116,24 @@ async function run() {
                 console.log('options', options);
                 const result = await (0, export_1.exportArchive)(options);
                 core.startGroup('xcodebuild');
+                core.info(`Command: ${result.Command}`);
+                core.info(`Arguments: ${result.Args.join(' ')}`);
+                core.info(`Code: ${result.Code}`);
+                core.info(`Stdout: ${result.Stdout}`);
+                core.info(`Stderr: ${result.Stderr}`);
+                core.endGroup();
+                break;
+            }
+            case 'upload': {
+                const options = {
+                    Type: core.getInput('type'),
+                    File: core.getInput('file'),
+                    AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id'),
+                    AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id')
+                };
+                console.log('options', options);
+                const result = await (0, uploadApp_1.uploadApp)(options);
+                core.startGroup('xcrun altool');
                 core.info(`Command: ${result.Command}`);
                 core.info(`Arguments: ${result.Args.join(' ')}`);
                 core.info(`Code: ${result.Code}`);
@@ -36176,6 +36195,41 @@ async function spawn(command, args) {
             reject(error);
         });
     });
+}
+
+
+/***/ }),
+
+/***/ 6969:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.uploadApp = uploadApp;
+const spawn_1 = __nccwpck_require__(509);
+async function argumentsBuilder(options) {
+    return new Promise((resolve, reject) => {
+        const args = [
+            'xcrun',
+            'altool',
+            '--upload-app',
+            '--type', options.Type,
+            '--file', options.File,
+            '--apiKey', options.AppStoreConnectAPIKeyID,
+            '--issuer', options.AppStoreConnectAPIIssuer
+        ];
+        resolve(args);
+    });
+}
+/**
+ * Upload an app.
+ * @param options The options for the upload.
+ * @returns {Promise<SpawnResult>} The result of the upload.
+ */
+async function uploadApp(options) {
+    const args = await argumentsBuilder(options);
+    return (0, spawn_1.spawn)('xcrun', args);
 }
 
 
