@@ -24934,6 +24934,8 @@ async function argumentsBuilder(options) {
     return new Promise((resolve, reject) => {
         resolve([
             'archive',
+            '-destination',
+            'generic/platform=iOS',
             '-scheme',
             options.Scheme,
             '-project',
