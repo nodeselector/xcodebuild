@@ -18,7 +18,7 @@ async function argumentsBuilder(options: UploadOptions): Promise<string[]> {
       '--type', options.Type,
       '--file', file,
       '--apiKey', options.AppStoreConnectAPIKeyID,
-      '--issuer', options.AppStoreConnectAPIIssuer
+      '--apiIssuer', options.AppStoreConnectAPIIssuer
     ]
     resolve(args)
   })
