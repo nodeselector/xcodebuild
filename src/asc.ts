@@ -9,11 +9,17 @@ export type AppStoreConnectApiConfig = {
   KeyPath: string
 }
 
+type keyinfoFile = {
+  keyId: string
+  issuerId: string
+  privateKey: string
+}
+
 const ascDir = path.join(os.homedir(), '.appstoreconnect/private_keys')
 const ascInfoPath = `${ascDir}/keyinfo.json`
 
 export async function loadAppStoreConnectApiConfig(): Promise<AppStoreConnectApiConfig> {
-  let cfg: AppStoreConnectApiConfig = {
+  const cfg: AppStoreConnectApiConfig = {
     KeyId: '',
     IssuerId: '',
     KeyPath: ''
@@ -24,7 +30,9 @@ export async function loadAppStoreConnectApiConfig(): Promise<AppStoreConnectApi
   if (fs.existsSync(ascInfoPath)) {
     core.debug('found key info on disk')
     const data = fs.readFileSync(ascInfoPath, 'utf8')
-    cfg = JSON.parse(data)
+    const keyinfo: keyinfoFile = JSON.parse(data)
+    cfg.KeyId = keyinfo.keyId
+    cfg.IssuerId = keyinfo.issuerId
   }
 
   if (!cfg.KeyId) {
@@ -32,14 +40,27 @@ export async function loadAppStoreConnectApiConfig(): Promise<AppStoreConnectApi
     cfg.KeyId = core.getInput('app-store-connect-api-key-key-id')
   }
 
+  if (!cfg.KeyId) {
+    throw new Error(
+      'App Store Connect API key ID is required but was not found in key info or inputs'
+    )
+  }
+
   if (!cfg.IssuerId) {
     core.debug('issuer id not found in key info reading from inputs')
     cfg.IssuerId = core.getInput('app-store-connect-api-key-issuer-id')
   }
 
+  if (!cfg.IssuerId) {
+    throw new Error(
+      'App Store Connect API issuer ID is required but was not found in key info or inputs'
+    )
+  }
+
   if (!cfg.KeyPath) {
-    core.debug('key path not found in key info reading from inputs')
     cfg.KeyPath = core.getInput('app-store-connect-api-key-key-path')
+  } else {
+    cfg.KeyPath = path.join(ascDir, `AuthKey_${cfg.KeyId}.p8`)
   }
 
   return cfg
