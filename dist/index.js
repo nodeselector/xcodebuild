@@ -36033,6 +36033,9 @@ async function loadAppStoreConnectApiConfig() {
     if (!cfg.KeyPath) {
         cfg.KeyPath = core.getInput('app-store-connect-api-key-key-path');
     }
+    if (!cfg.KeyPath) {
+        throw new Error('App Store Connect API key path is required but was not found in key info or inputs');
+    }
     return cfg;
 }
 
