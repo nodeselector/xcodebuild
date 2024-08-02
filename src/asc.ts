@@ -1,5 +1,7 @@
 import * as core from '@actions/core'
 import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 
 export type AppStoreConnectApiConfig = {
   KeyId: string
@@ -7,7 +9,7 @@ export type AppStoreConnectApiConfig = {
   KeyPath: string
 }
 
-const ascDir = '~/.appstoreconnect/private_keys'
+const ascDir = path.join(os.homedir(), '.appstoreconnect/private_keys')
 const ascInfoPath = `${ascDir}/keyinfo.json`
 
 export async function loadAppStoreConnectApiConfig(): Promise<AppStoreConnectApiConfig> {

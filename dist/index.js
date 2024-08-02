@@ -35997,7 +35997,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.loadAppStoreConnectApiConfig = loadAppStoreConnectApiConfig;
 const core = __importStar(__nccwpck_require__(2186));
 const node_fs_1 = __importDefault(__nccwpck_require__(7561));
-const ascDir = '~/.appstoreconnect/private_keys';
+const node_os_1 = __importDefault(__nccwpck_require__(612));
+const node_path_1 = __importDefault(__nccwpck_require__(9411));
+const ascDir = node_path_1.default.join(node_os_1.default.homedir(), '.appstoreconnect/private_keys');
 const ascInfoPath = `${ascDir}/keyinfo.json`;
 async function loadAppStoreConnectApiConfig() {
     let cfg = {
