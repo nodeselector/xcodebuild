@@ -8,82 +8,194 @@
 
 import * as core from '@actions/core'
 import * as main from '../src/main'
+import * as archive from '../src/archive'
+import * as exportArchive from '../src/export'
+import * as uploadApp from '../src/uploadApp'
 
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
-// Other utilities
-const timeRegex = /^\d{2}:\d{2}:\d{2}/
-
 // Mock the GitHub Actions core library
-let debugMock: jest.SpiedFunction<typeof core.debug>
-let errorMock: jest.SpiedFunction<typeof core.error>
 let getInputMock: jest.SpiedFunction<typeof core.getInput>
 let setFailedMock: jest.SpiedFunction<typeof core.setFailed>
-let setOutputMock: jest.SpiedFunction<typeof core.setOutput>
+let archiveMock: jest.SpiedFunction<typeof archive.archive>
+let getBooleanInputMock: jest.SpiedFunction<typeof core.getBooleanInput>
+let exportArchiveMock: jest.SpiedFunction<typeof exportArchive.exportArchive>
+let uploadAppMock: jest.SpiedFunction<typeof uploadApp.uploadApp>
 
 describe('action', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    Object.defineProperty(process, 'platform', { value: 'darwin' })
 
-    debugMock = jest.spyOn(core, 'debug').mockImplementation()
-    errorMock = jest.spyOn(core, 'error').mockImplementation()
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
+    getBooleanInputMock = jest
+      .spyOn(core, 'getBooleanInput')
+      .mockImplementation()
     setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
-    setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
+    archiveMock = jest.spyOn(archive, 'archive').mockImplementation()
+    exportArchiveMock = jest
+      .spyOn(exportArchive, 'exportArchive')
+      .mockImplementation()
+    uploadAppMock = jest.spyOn(uploadApp, 'uploadApp').mockImplementation()
   })
 
-  it('sets the time output', async () => {
-    // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => {
+  it('does not run on linux', async () => {
+    Object.defineProperty(process, 'platform', { value: 'linux' })
+    await main.run()
+    expect(runMock).toHaveBeenCalled()
+    expect(setFailedMock).toHaveBeenCalledWith(
+      'This action is only supported on macOS'
+    )
+  })
+
+  it('runs on darwin', async () => {
+    await main.run()
+    expect(runMock).toHaveBeenCalled()
+    expect(setFailedMock).toHaveBeenCalledWith('Unknown action: undefined')
+  })
+
+  it('calls archive for archive action', async () => {
+    getInputMock.mockImplementation((name: string) => {
       switch (name) {
-        case 'milliseconds':
-          return '500'
+        case 'action':
+          return 'archive'
+        case 'scheme':
+          return 'MyScheme'
+        case 'workspace':
+          return 'MyWorkspace'
+        case 'destination':
+          return 'MyDestination'
+        case 'project':
+          return 'MyProject'
+        case 'archive-path':
+          return 'MyArchivePath'
         default:
           return ''
       }
     })
-
+    getBooleanInputMock.mockImplementation((name: string) => {
+      switch (name) {
+        case 'allow-provisioning-updates':
+          return true
+        case 'allow-device-registration':
+          return true
+        default:
+          return false
+      }
+    })
+    archiveMock.mockResolvedValue({
+      Code: 0,
+      Stdout: '',
+      Stderr: '',
+      Command: 'xcodebuild',
+      Args: []
+    })
     await main.run()
-    expect(runMock).toHaveReturned()
-
-    // Verify that all of the core library functions were called correctly
-    expect(debugMock).toHaveBeenNthCalledWith(1, 'Waiting 500 milliseconds ...')
-    expect(debugMock).toHaveBeenNthCalledWith(
-      2,
-      expect.stringMatching(timeRegex)
-    )
-    expect(debugMock).toHaveBeenNthCalledWith(
-      3,
-      expect.stringMatching(timeRegex)
-    )
-    expect(setOutputMock).toHaveBeenNthCalledWith(
-      1,
-      'time',
-      expect.stringMatching(timeRegex)
-    )
-    expect(errorMock).not.toHaveBeenCalled()
+    expect(runMock).toHaveBeenCalled()
+    expect(setFailedMock).not.toHaveBeenCalled()
+    expect(archiveMock).toHaveBeenCalledWith({
+      Scheme: 'MyScheme',
+      Workspace: 'MyWorkspace',
+      Destination: 'MyDestination',
+      Project: 'MyProject',
+      ArchivePath: 'MyArchivePath',
+      AllowProvisioningUpdates: true,
+      AllowProvisioningDeviceRegistration: true,
+      AppStoreConnectApiConfig: {
+        KeyId: '',
+        IssuerId: '',
+        KeyPath: ''
+      }
+    })
   })
 
-  it('sets a failed status', async () => {
-    // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => {
+  it('calls export for export action', async () => {
+    getInputMock.mockImplementation((name: string) => {
       switch (name) {
-        case 'milliseconds':
-          return 'this is not a number'
+        case 'action':
+          return 'export'
+        case 'archive-path':
+          return 'MyArchivePath'
+        case 'export-path':
+          return 'MyExportPath'
+        case 'export-options-plist':
+          return 'MyExportOptionsPlist'
+        case 'export-method':
+          return 'MyExportMethod'
         default:
           return ''
       }
     })
-
+    getBooleanInputMock.mockImplementation((name: string) => {
+      switch (name) {
+        case 'allow-provisioning-updates':
+          return true
+        case 'allow-device-registration':
+          return true
+        default:
+          return false
+      }
+    })
+    exportArchiveMock.mockResolvedValue({
+      Code: 0,
+      Stdout: '',
+      Stderr: '',
+      Command: 'xcodebuild',
+      Args: []
+    })
     await main.run()
-    expect(runMock).toHaveReturned()
+    expect(runMock).toHaveBeenCalled()
+    expect(setFailedMock).not.toHaveBeenCalled()
+    expect(exportArchiveMock).toHaveBeenCalledWith({
+      ArchivePath: 'MyArchivePath',
+      ExportPath: 'MyExportPath',
+      ExportOptionsPlist: 'MyExportOptionsPlist',
+      ExportMethod: 'MyExportMethod',
+      AllowProvisioningUpdates: true,
+      AllowProvisioningDeviceRegistration: true,
+      AppStoreConnectApiConfig: {
+        KeyId: '',
+        IssuerId: '',
+        KeyPath: ''
+      }
+    })
+  })
 
-    // Verify that all of the core library functions were called correctly
-    expect(setFailedMock).toHaveBeenNthCalledWith(
-      1,
-      'milliseconds not a number'
-    )
-    expect(errorMock).not.toHaveBeenCalled()
+  it('calls uploadApp from uploadApp action', async () => {
+    getInputMock.mockImplementation((name: string) => {
+      switch (name) {
+        case 'action':
+          return 'upload'
+        case 'upload-type':
+          return 'MyType'
+        case 'export-path':
+          return 'MyExportPath'
+        case 'product-name':
+          return 'MyProductName'
+        default:
+          return ''
+      }
+    })
+    uploadAppMock.mockResolvedValue({
+      Code: 0,
+      Stdout: '',
+      Stderr: '',
+      Command: 'xcrun',
+      Args: []
+    })
+    await main.run()
+    expect(runMock).toHaveBeenCalled()
+    expect(setFailedMock).not.toHaveBeenCalled()
+    expect(uploadAppMock).toHaveBeenCalledWith({
+      Type: 'MyType',
+      ExportPath: 'MyExportPath',
+      ProductName: 'MyProductName',
+      AppStoreConnectApiConfig: {
+        KeyId: '',
+        IssuerId: '',
+        KeyPath: ''
+      }
+    })
   })
 })

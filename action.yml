@@ -1,12 +1,18 @@
 name: nodeselector/xcodebuild
 description: wrapper for xcodebuild
-author: "@nodeselector"
+author: '@nodeselector'
 inputs:
-  action: 
+  action:
     description: 'The action to perform'
     default: 'build'
+  upload-type:
+    description: 'ios | macos | tvos'
+    default: 'ios'
   scheme:
     description: 'The scheme to build'
+    default: ''
+  product-name:
+    description: 'The product name to build'
     default: ''
   configuration:
     description: 'The configuration to build'
@@ -23,21 +29,37 @@ inputs:
   archive-path:
     description: 'The path to the archive'
     default: ''
-  app-store-connect-api-key:
+  export-method:
+    description: 'The export method'
+    default: 'development'
+  export-path:
+    description: 'The path to export to'
+    default: ''
+  app-store-connect-api-key-key-path:
     description: 'The App Store Connect API key'
     default: ''
-  app-store-connect-api-issuer-id:
+  app-store-connect-api-key-issuer-id:
     description: 'The App Store Connect API issuer ID'
     default: ''
-  app-store-connect-api-key-id:
+  app-store-connect-api-key-key-id:
     description: 'The App Store Connect API key ID'
     default: ''
   allow-provisioning-updates:
     description: 'Allow provisioning updates'
     default: 'false'
   allow-device-registration:
-    description: 'Allow device registration'
+    description: |
+      Allow device registration. This can register the virtual machine hosting the
+      workflow with the Apple Developer Portal. This is probably not what you want
+      since it will consume a device slot and the virtual machine uuid will vary
+      over time.
+
+      The machine uuid is setable on Intel virtual machines, but unfortunately, not
+      on Apple Silicon virtual machines.
     default: 'false'
+outputs:
+  export-path:
+    description: 'The path to the exported file'
 
 runs:
   using: node20
