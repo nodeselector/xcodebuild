@@ -19,6 +19,8 @@ export async function loadAppStoreConnectApiConfig(): Promise<AppStoreConnectApi
     KeyPath: ''
   }
 
+  core.debug(`Looking for App Store Connect API key info at ${ascInfoPath}`)
+
   if (fs.existsSync(ascInfoPath)) {
     const data = fs.readFileSync(ascInfoPath, 'utf8')
     cfg = JSON.parse(data)

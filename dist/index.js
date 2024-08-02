@@ -36007,6 +36007,7 @@ async function loadAppStoreConnectApiConfig() {
         IssuerId: '',
         KeyPath: ''
     };
+    core.debug(`Looking for App Store Connect API key info at ${ascInfoPath}`);
     if (node_fs_1.default.existsSync(ascInfoPath)) {
         const data = node_fs_1.default.readFileSync(ascInfoPath, 'utf8');
         cfg = JSON.parse(data);
