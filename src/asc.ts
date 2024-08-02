@@ -22,19 +22,23 @@ export async function loadAppStoreConnectApiConfig(): Promise<AppStoreConnectApi
   core.debug(`Looking for App Store Connect API key info at ${ascInfoPath}`)
 
   if (fs.existsSync(ascInfoPath)) {
+    core.debug('found key info on disk')
     const data = fs.readFileSync(ascInfoPath, 'utf8')
     cfg = JSON.parse(data)
   }
 
   if (!cfg.KeyId) {
+    core.debug('key id not found in key info reading from inputs')
     cfg.KeyId = core.getInput('app-store-connect-api-key-key-id')
   }
 
   if (!cfg.IssuerId) {
+    core.debug('issuer id not found in key info reading from inputs')
     cfg.IssuerId = core.getInput('app-store-connect-api-key-issuer-id')
   }
 
   if (!cfg.KeyPath) {
+    core.debug('key path not found in key info reading from inputs')
     cfg.KeyPath = core.getInput('app-store-connect-api-key-key-path')
   }
 
