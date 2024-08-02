@@ -33,6 +33,7 @@ export async function loadAppStoreConnectApiConfig(): Promise<AppStoreConnectApi
     const keyinfo: keyinfoFile = JSON.parse(data)
     cfg.KeyId = keyinfo.keyId
     cfg.IssuerId = keyinfo.issuerId
+    cfg.KeyPath = path.join(ascDir, `AuthKey_${cfg.KeyId}.p8`)
   }
 
   if (!cfg.KeyId) {
@@ -59,9 +60,7 @@ export async function loadAppStoreConnectApiConfig(): Promise<AppStoreConnectApi
 
   if (!cfg.KeyPath) {
     cfg.KeyPath = core.getInput('app-store-connect-api-key-key-path')
-  } else {
-    cfg.KeyPath = path.join(ascDir, `AuthKey_${cfg.KeyId}.p8`)
-  }
+  } 
 
   return cfg
 }
