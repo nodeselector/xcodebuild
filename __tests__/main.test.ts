@@ -11,6 +11,7 @@ import * as main from '../src/main'
 import * as archive from '../src/archive'
 import * as exportArchive from '../src/export'
 import * as uploadApp from '../src/uploadApp'
+import * as asc from '../src/asc'
 
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
@@ -22,6 +23,9 @@ let archiveMock: jest.SpiedFunction<typeof archive.archive>
 let getBooleanInputMock: jest.SpiedFunction<typeof core.getBooleanInput>
 let exportArchiveMock: jest.SpiedFunction<typeof exportArchive.exportArchive>
 let uploadAppMock: jest.SpiedFunction<typeof uploadApp.uploadApp>
+let loadAppStoreConnectApiConfigMock: jest.SpiedFunction<
+  typeof asc.loadAppStoreConnectApiConfig
+>
 
 describe('action', () => {
   beforeEach(() => {
@@ -38,6 +42,14 @@ describe('action', () => {
       .spyOn(exportArchive, 'exportArchive')
       .mockImplementation()
     uploadAppMock = jest.spyOn(uploadApp, 'uploadApp').mockImplementation()
+
+    loadAppStoreConnectApiConfigMock = jest
+      .spyOn(asc, 'loadAppStoreConnectApiConfig')
+      .mockResolvedValue({
+        KeyId: 'MyKeyId',
+        IssuerId: 'MyIssuerId',
+        KeyPath: 'MyKeyPath'
+      })
   })
 
   it('does not run on linux', async () => {
@@ -52,6 +64,7 @@ describe('action', () => {
   it('runs on darwin', async () => {
     await main.run()
     expect(runMock).toHaveBeenCalled()
+    expect(loadAppStoreConnectApiConfigMock).toHaveBeenCalled()
     expect(setFailedMock).toHaveBeenCalledWith('Unknown action: undefined')
   })
 
@@ -93,6 +106,7 @@ describe('action', () => {
     })
     await main.run()
     expect(runMock).toHaveBeenCalled()
+    expect(loadAppStoreConnectApiConfigMock).toHaveBeenCalled()
     expect(setFailedMock).not.toHaveBeenCalled()
     expect(archiveMock).toHaveBeenCalledWith({
       Scheme: 'MyScheme',
@@ -103,9 +117,9 @@ describe('action', () => {
       AllowProvisioningUpdates: true,
       AllowProvisioningDeviceRegistration: true,
       AppStoreConnectApiConfig: {
-        KeyId: '',
-        IssuerId: '',
-        KeyPath: ''
+        KeyId: 'MyKeyId',
+        IssuerId: 'MyIssuerId',
+        KeyPath: 'MyKeyPath'
       }
     })
   })
@@ -146,6 +160,7 @@ describe('action', () => {
     })
     await main.run()
     expect(runMock).toHaveBeenCalled()
+    expect(loadAppStoreConnectApiConfigMock).toHaveBeenCalled()
     expect(setFailedMock).not.toHaveBeenCalled()
     expect(exportArchiveMock).toHaveBeenCalledWith({
       ArchivePath: 'MyArchivePath',
@@ -155,9 +170,9 @@ describe('action', () => {
       AllowProvisioningUpdates: true,
       AllowProvisioningDeviceRegistration: true,
       AppStoreConnectApiConfig: {
-        KeyId: '',
-        IssuerId: '',
-        KeyPath: ''
+        KeyId: 'MyKeyId',
+        IssuerId: 'MyIssuerId',
+        KeyPath: 'MyKeyPath'
       }
     })
   })
@@ -186,15 +201,16 @@ describe('action', () => {
     })
     await main.run()
     expect(runMock).toHaveBeenCalled()
+    expect(loadAppStoreConnectApiConfigMock).toHaveBeenCalled()
     expect(setFailedMock).not.toHaveBeenCalled()
     expect(uploadAppMock).toHaveBeenCalledWith({
       Type: 'MyType',
       ExportPath: 'MyExportPath',
       ProductName: 'MyProductName',
       AppStoreConnectApiConfig: {
-        KeyId: '',
-        IssuerId: '',
-        KeyPath: ''
+        KeyId: 'MyKeyId',
+        IssuerId: 'MyIssuerId',
+        KeyPath: 'MyKeyPath'
       }
     })
   })

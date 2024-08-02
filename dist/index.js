@@ -36002,23 +36002,39 @@ const node_path_1 = __importDefault(__nccwpck_require__(9411));
 const ascDir = node_path_1.default.join(node_os_1.default.homedir(), '.appstoreconnect/private_keys');
 const ascInfoPath = `${ascDir}/keyinfo.json`;
 async function loadAppStoreConnectApiConfig() {
-    let cfg = {
+    const cfg = {
         KeyId: '',
         IssuerId: '',
         KeyPath: ''
     };
+    core.debug(`Looking for App Store Connect API key info at ${ascInfoPath}`);
     if (node_fs_1.default.existsSync(ascInfoPath)) {
+        core.debug('found key info on disk');
         const data = node_fs_1.default.readFileSync(ascInfoPath, 'utf8');
-        cfg = JSON.parse(data);
+        const keyinfo = JSON.parse(data);
+        cfg.KeyId = keyinfo.keyId;
+        cfg.IssuerId = keyinfo.issuerId;
+        cfg.KeyPath = node_path_1.default.join(ascDir, `AuthKey_${cfg.KeyId}.p8`);
     }
     if (!cfg.KeyId) {
+        core.debug('key id not found in key info reading from inputs');
         cfg.KeyId = core.getInput('app-store-connect-api-key-key-id');
     }
+    if (!cfg.KeyId) {
+        throw new Error('App Store Connect API key ID is required but was not found in key info or inputs');
+    }
     if (!cfg.IssuerId) {
+        core.debug('issuer id not found in key info reading from inputs');
         cfg.IssuerId = core.getInput('app-store-connect-api-key-issuer-id');
+    }
+    if (!cfg.IssuerId) {
+        throw new Error('App Store Connect API issuer ID is required but was not found in key info or inputs');
     }
     if (!cfg.KeyPath) {
         cfg.KeyPath = core.getInput('app-store-connect-api-key-key-path');
+    }
+    if (!cfg.KeyPath) {
+        throw new Error('App Store Connect API key path is required but was not found in key info or inputs');
     }
     return cfg;
 }
