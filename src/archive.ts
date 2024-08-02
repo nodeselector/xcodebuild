@@ -1,6 +1,7 @@
 import { SpawnResult, spawn } from './spawn'
+import { AppStoreConnectApiConfig } from './asc'
 
-type ArchiveOptions = {
+export type ArchiveOptions = {
   Scheme: string
   Project: string
   ArchivePath: string
@@ -8,61 +9,61 @@ type ArchiveOptions = {
   Destination: string
   AllowProvisioningUpdates: boolean
   AllowProvisioningDeviceRegistration: boolean
-  AppStoreConnectAPIKey: string
-  AppStoreConnectAPIIssuer: string
-  AppStoreConnectAPIKeyID: string
+  AppStoreConnectApiConfig: AppStoreConnectApiConfig
 }
 
-async function argumentsBuilder(options: ArchiveOptions): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const args = [
-      'archive',
-    ]
+function argumentsBuilder(options: ArchiveOptions): string[] {
+  const args = ['archive']
 
-    if (options.Scheme) {
-      args.push('-scheme', options.Scheme)
-    }
+  if (options.Scheme) {
+    args.push('-scheme', options.Scheme)
+  }
 
-    if (options.Project) {
-      args.push('-project', options.Project)
-    }
+  if (options.Project) {
+    args.push('-project', options.Project)
+  }
 
-    if (options.ArchivePath) {
-      args.push('-archivePath', options.ArchivePath)
-    }
+  if (options.ArchivePath) {
+    args.push('-archivePath', options.ArchivePath)
+  }
 
-    if (options.Workspace) {
-      args.push('-workspace', options.Workspace)
-    }
+  if (options.Workspace) {
+    args.push('-workspace', options.Workspace)
+  }
 
-    if (options.Destination) {
-      args.push('-destination', options.Destination)
-    }
+  if (options.Destination) {
+    args.push('-destination', options.Destination)
+  }
 
-    if (options.AllowProvisioningUpdates) {
-      args.push('-allowProvisioningUpdates')
-    }
+  if (options.AllowProvisioningUpdates) {
+    args.push('-allowProvisioningUpdates')
+  }
 
-    if (options.AllowProvisioningDeviceRegistration) {
-      args.push('-allowProvisioningDeviceRegistration')
-    }
+  if (options.AllowProvisioningDeviceRegistration) {
+    args.push('-allowProvisioningDeviceRegistration')
+  }
 
-    if (options.AppStoreConnectAPIKey) {
-      args.push('-authenticationKeyPath', options.AppStoreConnectAPIKey)
-    }
+  if (options.AppStoreConnectApiConfig.KeyPath) {
+    args.push(
+      '-authenticationKeyPath',
+      options.AppStoreConnectApiConfig.KeyPath
+    )
+  }
 
-    if (options.AppStoreConnectAPIIssuer) {
-      args.push('-authenticationKeyIssuerID', options.AppStoreConnectAPIIssuer)
-    }
+  if (options.AppStoreConnectApiConfig.IssuerId) {
+    args.push(
+      '-authenticationKeyIssuerID',
+      options.AppStoreConnectApiConfig.IssuerId
+    )
+  }
 
-    if (options.AppStoreConnectAPIKeyID) {
-      args.push('-authenticationKeyID', options.AppStoreConnectAPIKeyID)
-    }
+  if (options.AppStoreConnectApiConfig.KeyId) {
+    args.push('-authenticationKeyID', options.AppStoreConnectApiConfig.KeyId)
+  }
 
-    resolve(args)
-  })
+  return args
 }
 
 export async function archive(options: ArchiveOptions): Promise<SpawnResult> {
-  return spawn('xcodebuild', await argumentsBuilder(options))
+  return spawn('xcodebuild', argumentsBuilder(options))
 }

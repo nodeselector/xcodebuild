@@ -1,14 +1,16 @@
 import * as core from '@actions/core'
-import { archive } from './archive'
-import { exportArchive } from './export'
-import { uploadApp } from './uploadApp'
+import { archive, ArchiveOptions } from './archive'
+import { exportArchive, ExportOptions } from './export'
+import { uploadApp, UploadOptions } from './uploadApp'
+import { loadAppStoreConnectApiConfig } from './asc'
+import { SpawnResult } from './spawn'
 
 /**
  * Logs the result of a command and groups the output.
  * @param {string} groupName - The name of the group.
  * @param {any} result - The result object containing command details.
  */
-function logResult(groupName: string, result: any): void {
+function logResult(groupName: string, result: SpawnResult): void {
   core.startGroup(groupName)
   core.info(`Command: ${result.Command}`)
   core.info(`Arguments: ${result.Args.join(' ')}`)
@@ -24,62 +26,71 @@ function logResult(groupName: string, result: any): void {
  */
 export async function run(): Promise<void> {
   try {
+    if (process.platform !== 'darwin') {
+      throw new Error('This action is only supported on macOS')
+    }
+
+    const ascConfig = await loadAppStoreConnectApiConfig()
     const action = core.getInput('action')
-    let options: any
-    let result: any
 
     switch (action) {
-      case 'archive':
-        options = {
+      case 'archive': {
+        const options: ArchiveOptions = {
           Scheme: core.getInput('scheme'),
           Workspace: core.getInput('workspace'),
           Destination: core.getInput('destination'),
           Project: core.getInput('project'),
           ArchivePath: core.getInput('archive-path'),
-          AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
-          AllowProvisioningDeviceRegistration: core.getBooleanInput('allow-device-registration'),
-          AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key-key-path'),
-          AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id'),
-          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id')
+          AllowProvisioningUpdates: core.getBooleanInput(
+            'allow-provisioning-updates'
+          ),
+          AllowProvisioningDeviceRegistration: core.getBooleanInput(
+            'allow-device-registration'
+          ),
+          AppStoreConnectApiConfig: ascConfig
         }
         console.log('options', options)
-        result = await archive(options)
+        const result = await archive(options)
         logResult('xcodebuild', result)
-        if (result.Code !== 0) throw new Error(`Archive failed with code ${result.Code}`)
+        if (result.Code !== 0)
+          throw new Error(`Archive failed with code ${result.Code}`)
         break
-
-      case 'export':
-        options = {
+      }
+      case 'export': {
+        const options: ExportOptions = {
           ArchivePath: core.getInput('archive-path'),
           ExportPath: core.getInput('export-path'),
           ExportOptionsPlist: core.getInput('export-options-plist'),
           ExportMethod: core.getInput('export-method'),
-          AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
-          AllowProvisioningDeviceRegistration: core.getBooleanInput('allow-device-registration'),
-          AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key-key-path'),
-          AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id'),
-          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id')
+          AllowProvisioningUpdates: core.getBooleanInput(
+            'allow-provisioning-updates'
+          ),
+          AllowProvisioningDeviceRegistration: core.getBooleanInput(
+            'allow-device-registration'
+          ),
+          AppStoreConnectApiConfig: ascConfig
         }
         console.log('options', options)
-        result = await exportArchive(options)
+        const result = await exportArchive(options)
         logResult('xcodebuild', result)
-        if (result.Code !== 0) throw new Error(`Export failed with code ${result.Code}`)
+        if (result.Code !== 0)
+          throw new Error(`Export failed with code ${result.Code}`)
         break
-
-      case 'upload':
-        options = {
+      }
+      case 'upload': {
+        const options: UploadOptions = {
           Type: core.getInput('upload-type'),
           ExportPath: core.getInput('export-path'),
           ProductName: core.getInput('product-name'),
-          AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id'),
-          AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id')
+          AppStoreConnectApiConfig: ascConfig
         }
         console.log('options', options)
-        result = await uploadApp(options)
+        const result = await uploadApp(options)
         logResult('xcrun altool', result)
-        if (result.Code !== 0) throw new Error(`Upload failed with code ${result.Code}`)
+        if (result.Code !== 0)
+          throw new Error(`Upload failed with code ${result.Code}`)
         break
-
+      }
       default:
         throw new Error(`Unknown action: ${action}`)
     }

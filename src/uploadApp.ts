@@ -1,27 +1,30 @@
 import { spawn, SpawnResult } from './spawn'
+import { AppStoreConnectApiConfig } from './asc'
+
 import path from 'node:path'
 
-type UploadOptions = {
+export type UploadOptions = {
   Type: string
   ExportPath: string
   ProductName: string
-  AppStoreConnectAPIKeyID: string
-  AppStoreConnectAPIIssuer: string
+  AppStoreConnectApiConfig: AppStoreConnectApiConfig
 }
 
-async function argumentsBuilder(options: UploadOptions): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const file = path.join(options.ExportPath, `${options.ProductName}.ipa`) // TODO ipa extension is hardcoded
-    const args = [
-      'altool',
-      '--upload-app', // TODO start using --upload-package (--upload-app is deprecated)
-      '--type', options.Type,
-      '--file', file,
-      '--apiKey', options.AppStoreConnectAPIKeyID,
-      '--apiIssuer', options.AppStoreConnectAPIIssuer
-    ]
-    resolve(args)
-  })
+function argumentsBuilder(options: UploadOptions): string[] {
+  const file = path.join(options.ExportPath, `${options.ProductName}.ipa`) // TODO ipa extension is hardcoded
+  const args = [
+    'altool',
+    '--upload-app', // TODO start using --upload-package (--upload-app is deprecated)
+    '--type',
+    options.Type,
+    '--file',
+    file,
+    '--apiKey',
+    options.AppStoreConnectApiConfig.KeyId,
+    '--apiIssuer',
+    options.AppStoreConnectApiConfig.IssuerId
+  ]
+  return args
 }
 
 /**
@@ -30,6 +33,6 @@ async function argumentsBuilder(options: UploadOptions): Promise<string[]> {
  * @returns {Promise<SpawnResult>} The result of the upload.
  */
 export async function uploadApp(options: UploadOptions): Promise<SpawnResult> {
-  const args = await argumentsBuilder(options)
+  const args = argumentsBuilder(options)
   return spawn('xcrun', args)
 }

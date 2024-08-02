@@ -35921,46 +35921,104 @@ exports["default"] = _default;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.archive = archive;
 const spawn_1 = __nccwpck_require__(509);
-async function argumentsBuilder(options) {
-    return new Promise((resolve, reject) => {
-        const args = [
-            'archive',
-        ];
-        if (options.Scheme) {
-            args.push('-scheme', options.Scheme);
-        }
-        if (options.Project) {
-            args.push('-project', options.Project);
-        }
-        if (options.ArchivePath) {
-            args.push('-archivePath', options.ArchivePath);
-        }
-        if (options.Workspace) {
-            args.push('-workspace', options.Workspace);
-        }
-        if (options.Destination) {
-            args.push('-destination', options.Destination);
-        }
-        if (options.AllowProvisioningUpdates) {
-            args.push('-allowProvisioningUpdates');
-        }
-        if (options.AllowProvisioningDeviceRegistration) {
-            args.push('-allowProvisioningDeviceRegistration');
-        }
-        if (options.AppStoreConnectAPIKey) {
-            args.push('-authenticationKeyPath', options.AppStoreConnectAPIKey);
-        }
-        if (options.AppStoreConnectAPIIssuer) {
-            args.push('-authenticationKeyIssuerID', options.AppStoreConnectAPIIssuer);
-        }
-        if (options.AppStoreConnectAPIKeyID) {
-            args.push('-authenticationKeyID', options.AppStoreConnectAPIKeyID);
-        }
-        resolve(args);
-    });
+function argumentsBuilder(options) {
+    const args = ['archive'];
+    if (options.Scheme) {
+        args.push('-scheme', options.Scheme);
+    }
+    if (options.Project) {
+        args.push('-project', options.Project);
+    }
+    if (options.ArchivePath) {
+        args.push('-archivePath', options.ArchivePath);
+    }
+    if (options.Workspace) {
+        args.push('-workspace', options.Workspace);
+    }
+    if (options.Destination) {
+        args.push('-destination', options.Destination);
+    }
+    if (options.AllowProvisioningUpdates) {
+        args.push('-allowProvisioningUpdates');
+    }
+    if (options.AllowProvisioningDeviceRegistration) {
+        args.push('-allowProvisioningDeviceRegistration');
+    }
+    if (options.AppStoreConnectApiConfig.KeyPath) {
+        args.push('-authenticationKeyPath', options.AppStoreConnectApiConfig.KeyPath);
+    }
+    if (options.AppStoreConnectApiConfig.IssuerId) {
+        args.push('-authenticationKeyIssuerID', options.AppStoreConnectApiConfig.IssuerId);
+    }
+    if (options.AppStoreConnectApiConfig.KeyId) {
+        args.push('-authenticationKeyID', options.AppStoreConnectApiConfig.KeyId);
+    }
+    return args;
 }
 async function archive(options) {
-    return (0, spawn_1.spawn)('xcodebuild', await argumentsBuilder(options));
+    return (0, spawn_1.spawn)('xcodebuild', argumentsBuilder(options));
+}
+
+
+/***/ }),
+
+/***/ 5971:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadAppStoreConnectApiConfig = loadAppStoreConnectApiConfig;
+const core = __importStar(__nccwpck_require__(2186));
+const node_fs_1 = __importDefault(__nccwpck_require__(7561));
+const ascDir = '~/.appstoreconnect/private_keys';
+const ascInfoPath = `${ascDir}/keyinfo.json`;
+async function loadAppStoreConnectApiConfig() {
+    let cfg = {
+        KeyId: '',
+        IssuerId: '',
+        KeyPath: ''
+    };
+    if (node_fs_1.default.existsSync(ascInfoPath)) {
+        const data = node_fs_1.default.readFileSync(ascInfoPath, 'utf8');
+        cfg = JSON.parse(data);
+    }
+    if (!cfg.KeyId) {
+        cfg.KeyId = core.getInput('app-store-connect-api-key-key-id');
+    }
+    if (!cfg.IssuerId) {
+        cfg.IssuerId = core.getInput('app-store-connect-api-key-issuer-id');
+    }
+    if (!cfg.KeyPath) {
+        cfg.KeyPath = core.getInput('app-store-connect-api-key-key-path');
+    }
+    return cfg;
 }
 
 
@@ -36005,31 +36063,32 @@ const plist_1 = __importDefault(__nccwpck_require__(1933));
 const node_fs_1 = __importDefault(__nccwpck_require__(7561));
 const node_os_1 = __importDefault(__nccwpck_require__(612));
 const node_path_1 = __importDefault(__nccwpck_require__(9411));
-async function argumentsBuilder(options) {
-    return new Promise((resolve, reject) => {
-        const args = [
-            '-exportArchive',
-            '-archivePath', options.ArchivePath,
-            '-exportPath', options.ExportPath,
-            '-exportOptionsPlist', options.ExportOptionsPlist
-        ];
-        if (options.AllowProvisioningUpdates) {
-            args.push('-allowProvisioningUpdates');
-        }
-        if (options.AllowProvisioningDeviceRegistration) {
-            args.push('-allowProvisioningDeviceRegistration');
-        }
-        if (options.AppStoreConnectAPIKey) {
-            args.push('-authenticationKeyPath', options.AppStoreConnectAPIKey);
-        }
-        if (options.AppStoreConnectAPIIssuer) {
-            args.push('-authenticationKeyIssuerID', options.AppStoreConnectAPIIssuer);
-        }
-        if (options.AppStoreConnectAPIKeyID) {
-            args.push('-authenticationKeyID', options.AppStoreConnectAPIKeyID);
-        }
-        resolve(args);
-    });
+function argumentsBuilder(options) {
+    const args = [
+        '-exportArchive',
+        '-archivePath',
+        options.ArchivePath,
+        '-exportPath',
+        options.ExportPath,
+        '-exportOptionsPlist',
+        options.ExportOptionsPlist
+    ];
+    if (options.AllowProvisioningUpdates) {
+        args.push('-allowProvisioningUpdates');
+    }
+    if (options.AllowProvisioningDeviceRegistration) {
+        args.push('-allowProvisioningDeviceRegistration');
+    }
+    if (options.AppStoreConnectApiConfig.KeyPath) {
+        args.push('-authenticationKeyPath', options.AppStoreConnectApiConfig.KeyPath);
+    }
+    if (options.AppStoreConnectApiConfig.IssuerId) {
+        args.push('-authenticationKeyIssuerID', options.AppStoreConnectApiConfig.IssuerId);
+    }
+    if (options.AppStoreConnectApiConfig.KeyId) {
+        args.push('-authenticationKeyID', options.AppStoreConnectApiConfig.KeyId);
+    }
+    return args;
 }
 /**
  * Archive a project.
@@ -36047,13 +36106,13 @@ async function exportArchive(options) {
     core.setOutput('export-path', options.ExportPath);
     node_fs_1.default.mkdirSync(node_path_1.default.dirname(exportPlistPath), { recursive: true });
     node_fs_1.default.writeFileSync(exportPlistPath, generateExportPlist(options.ExportMethod));
-    const args = await argumentsBuilder(options);
+    const args = argumentsBuilder(options);
     return (0, spawn_1.spawn)('xcodebuild', args);
 }
 function generateExportPlist(exportType) {
-    let data = {
+    const data = {
         method: exportType,
-        destination: 'export',
+        destination: 'export'
     };
     return plist_1.default.build(data);
 }
@@ -36095,6 +36154,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const archive_1 = __nccwpck_require__(2933);
 const export_1 = __nccwpck_require__(2697);
 const uploadApp_1 = __nccwpck_require__(6969);
+const asc_1 = __nccwpck_require__(5971);
 /**
  * Logs the result of a command and groups the output.
  * @param {string} groupName - The name of the group.
@@ -36115,12 +36175,14 @@ function logResult(groupName, result) {
  */
 async function run() {
     try {
+        if (process.platform !== 'darwin') {
+            throw new Error('This action is only supported on macOS');
+        }
+        const ascConfig = await (0, asc_1.loadAppStoreConnectApiConfig)();
         const action = core.getInput('action');
-        let options;
-        let result;
         switch (action) {
-            case 'archive':
-                options = {
+            case 'archive': {
+                const options = {
                     Scheme: core.getInput('scheme'),
                     Workspace: core.getInput('workspace'),
                     Destination: core.getInput('destination'),
@@ -36128,48 +36190,46 @@ async function run() {
                     ArchivePath: core.getInput('archive-path'),
                     AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
                     AllowProvisioningDeviceRegistration: core.getBooleanInput('allow-device-registration'),
-                    AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key-key-path'),
-                    AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id'),
-                    AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id')
+                    AppStoreConnectApiConfig: ascConfig
                 };
                 console.log('options', options);
-                result = await (0, archive_1.archive)(options);
+                const result = await (0, archive_1.archive)(options);
                 logResult('xcodebuild', result);
                 if (result.Code !== 0)
                     throw new Error(`Archive failed with code ${result.Code}`);
                 break;
-            case 'export':
-                options = {
+            }
+            case 'export': {
+                const options = {
                     ArchivePath: core.getInput('archive-path'),
                     ExportPath: core.getInput('export-path'),
                     ExportOptionsPlist: core.getInput('export-options-plist'),
                     ExportMethod: core.getInput('export-method'),
                     AllowProvisioningUpdates: core.getBooleanInput('allow-provisioning-updates'),
                     AllowProvisioningDeviceRegistration: core.getBooleanInput('allow-device-registration'),
-                    AppStoreConnectAPIKey: core.getInput('app-store-connect-api-key-key-path'),
-                    AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id'),
-                    AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id')
+                    AppStoreConnectApiConfig: ascConfig
                 };
                 console.log('options', options);
-                result = await (0, export_1.exportArchive)(options);
+                const result = await (0, export_1.exportArchive)(options);
                 logResult('xcodebuild', result);
                 if (result.Code !== 0)
                     throw new Error(`Export failed with code ${result.Code}`);
                 break;
-            case 'upload':
-                options = {
+            }
+            case 'upload': {
+                const options = {
                     Type: core.getInput('upload-type'),
                     ExportPath: core.getInput('export-path'),
                     ProductName: core.getInput('product-name'),
-                    AppStoreConnectAPIKeyID: core.getInput('app-store-connect-api-key-key-id'),
-                    AppStoreConnectAPIIssuer: core.getInput('app-store-connect-api-key-issuer-id')
+                    AppStoreConnectApiConfig: ascConfig
                 };
                 console.log('options', options);
-                result = await (0, uploadApp_1.uploadApp)(options);
+                const result = await (0, uploadApp_1.uploadApp)(options);
                 logResult('xcrun altool', result);
                 if (result.Code !== 0)
                     throw new Error(`Upload failed with code ${result.Code}`);
                 break;
+            }
             default:
                 throw new Error(`Unknown action: ${action}`);
         }
@@ -36239,19 +36299,21 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uploadApp = uploadApp;
 const spawn_1 = __nccwpck_require__(509);
 const node_path_1 = __importDefault(__nccwpck_require__(9411));
-async function argumentsBuilder(options) {
-    return new Promise((resolve, reject) => {
-        const file = node_path_1.default.join(options.ExportPath, `${options.ProductName}.ipa`); // TODO ipa extension is hardcoded
-        const args = [
-            'altool',
-            '--upload-app', // TODO start using --upload-package (--upload-app is deprecated)
-            '--type', options.Type,
-            '--file', file,
-            '--apiKey', options.AppStoreConnectAPIKeyID,
-            '--apiIssuer', options.AppStoreConnectAPIIssuer
-        ];
-        resolve(args);
-    });
+function argumentsBuilder(options) {
+    const file = node_path_1.default.join(options.ExportPath, `${options.ProductName}.ipa`); // TODO ipa extension is hardcoded
+    const args = [
+        'altool',
+        '--upload-app', // TODO start using --upload-package (--upload-app is deprecated)
+        '--type',
+        options.Type,
+        '--file',
+        file,
+        '--apiKey',
+        options.AppStoreConnectApiConfig.KeyId,
+        '--apiIssuer',
+        options.AppStoreConnectApiConfig.IssuerId
+    ];
+    return args;
 }
 /**
  * Upload an app.
@@ -36259,7 +36321,7 @@ async function argumentsBuilder(options) {
  * @returns {Promise<SpawnResult>} The result of the upload.
  */
 async function uploadApp(options) {
-    const args = await argumentsBuilder(options);
+    const args = argumentsBuilder(options);
     return (0, spawn_1.spawn)('xcrun', args);
 }
 
