@@ -60,7 +60,7 @@ export async function loadAppStoreConnectApiConfig(): Promise<AppStoreConnectApi
 
   if (!cfg.KeyPath) {
     cfg.KeyPath = core.getInput('app-store-connect-api-key-key-path')
-  } 
+  }
 
   if (!cfg.KeyPath) {
     throw new Error(
